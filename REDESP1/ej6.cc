@@ -12,9 +12,14 @@ int main () {
    info = localtime( &rawtime );
 
    strftime(buffer,80,"%Y", info);
-   std::cout << "Estamos en el año : " << buffer;
-   /*strftime(buffer,80,"%H", info);
-   std::cout << "Estamos en el año : " << buffer;*/
+   std::cout << "Estamos en el año: " << buffer;
+
+   setlocale(LC_ALL, "es_ES.UTF-8");
+   strftime(buffer,80,"%A", info);
+   std::cout << "\nHoy es " << buffer;
+
+   strftime(buffer,80,"%H:%M", info);
+   std::cout << ", " << buffer << "\n";
   
    return(0);
 }
