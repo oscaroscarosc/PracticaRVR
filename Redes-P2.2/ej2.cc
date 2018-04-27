@@ -4,6 +4,31 @@
 #include <iostream>
 #include <string.h>
 
+int fecha (char comando, char *buffer){
+	time_t rawtime;
+   	struct tm *info;
+   	//char buffer[80];
+
+   	time( &rawtime );
+
+   	info = localtime( &rawtime );
+
+   	
+	if (comando == 't'){
+		return strftime(buffer,80,"%r", info);
+	}
+	else if (comando == 'd'){
+		return strftime(buffer,80,"%D", info);
+	}
+	else if (comando == 'q'){
+		return 0;
+	}
+	else{
+		std::cout << "Comando no soportado " << comando <<"\n";
+		return -1;
+	} 
+
+}
 int main (int argc, char** argv){
 	struct addrinfo hints;
 	struct addrinfo *res;
@@ -36,9 +61,20 @@ int main (int argc, char** argv){
 		getnameinfo(&src_addr,addrlen,host,NI_MAXHOST,serv,NI_MAXSERV,NI_NUMERICHOST | NI_NUMERICSERV);
 
 		std::cout << "Conexion: " << host << ":" << serv << "\n";
-		std::cout << "Mensaje: " << buff << std::endl;
+		//std::cout << "Mensaje: " << buff << std::endl;
 
-		sendto(sd,buff,s,0,&src_addr,addrlen);
+		int num = (fecha(buff[0], buff));
+		if (num == 0){
+			std::cout << "Saliendo...";
+			freeaddrinfo(res);
+			return 0;
+		}
+		else if (num == -1){
+			sendto(sd,buff,s,0,&src_addr,addrlen);
+		}
+		else {
+			std::cout << buff << "\n";
+		}
 	}
 	return 0;
 
