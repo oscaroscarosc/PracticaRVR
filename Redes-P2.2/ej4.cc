@@ -3,6 +3,8 @@
 #include <netdb.h>
 #include <iostream>
 #include <string.h>
+#include <unistd.h>
+
 
 
 int main (int argc, char** argv){
@@ -32,7 +34,7 @@ int main (int argc, char** argv){
 	char serv[NI_MAXSERV];
 	int socket_descriptor;
 
-	//freeaddrinfo(res);
+	
 
 	while(true){
 		
@@ -41,16 +43,24 @@ int main (int argc, char** argv){
 
 		std::cout << "Conexion: " << host << ":" << serv << "\n";
 		//std::cout << "Mensaje: " << buff << std::endl;
+		
+		while(true){
+			int c = 0;
+			int i = 0;
+			do {
+        			c = recv(socket_descriptor, &(buff[i]), 1, 0);
+  			} while ( c >= 0 && i < 255 && buff[i++] != '\n');
 
-		int c = 0;
-		do {
-        		c = recv(cliente_sd, &(buffer[i]), 1, 0);
-  		} while ( c >= 0 && i < 79 && buffer[i++] != '\n');
+			if(c==0){
+				close(socket_descriptor);
+				break;
+			}
 
-	
-		//sendto(sd,buff,num,0,&src_addr,addrlen);
-	
+			send(socket_descriptor,buff,i,0);
+		}
+		std::cout << "Conexión terminada\n";
 	}
+	freeaddrinfo(res);
 	return 0;
 
 	
