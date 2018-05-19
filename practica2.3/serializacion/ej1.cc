@@ -59,13 +59,13 @@ public:
 int main(int argc, char **argv)
 {
 	Jugador one("player one",12,345);
-	Jugador one_("-",0,0);
+	//Jugador one_("-",0,0);*/
 	one.to_bin();
-	/*int archivo = open("./prueba.txt",0);
-	std::cout << archivo << "\n";
-	write(archivo,one.data(),255);
-	close(archivo);*/
+	
+	int fd = open("ej1.txt", O_CREAT|O_RDWR, 0660);
+	write(fd, one.data(), one.size());
 	std::cout << "--------\n" << one.data() << "--------\n";
-	one_.from_bin(one.data());
-	std::cout << "N: " << one_.name << "\nX: " << one_.x << "\nY: " << one_.y << "\n";
+	//one_.from_bin(one.data());
+	//std::cout << "N: " << one_.name << "\nX: " << one_.x << "\nY: " << one_.y << "\n";
+	close(fd);
 }

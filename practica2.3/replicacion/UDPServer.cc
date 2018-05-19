@@ -27,12 +27,38 @@ extern "C" void * _server_thread(void *arg)
 
 int UDPServer::start()
 {
+		pthread_t tid[THREAD_POOL_SIZE];	
+		for(int i = 0; i < THREAD_POOL_SIZE; i++){
+			pthread_attr_t attr;
+
+			UDPServer* st = new UDPServer(socket);
+			pthread_attr_init (&attr);
+			pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+			pthread_create(&tid[i], &attr, _server_thread, static_cast<void*>(st));
+	}
 }
 
 // ----------------------------------------------------------------------------
 
 void UDPServer::server_thread()
 {
+	while(true){
+
+		char buff [256];
+		Socket * cliente;
+
+		socket.recv(buff, &cliente); 
+
+		connections.push_back(cliente);
+	    
+	  	getnameinfo((struct sockaddr *) &cliente, cliente_len, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICHOST|NI_NUMERICSERV);
+
+	  	std::cout << "Thread: " << pthread_self() << "\n";
+	  	std::cout << "Conexión : "<< host << " Puerto: "<< serv<<"\n";
+	  	std::cout << "\tMensaje(" << bytes <<"): " << buff << "\n";
+
+	}
 }
 
 // ----------------------------------------------------------------------------
